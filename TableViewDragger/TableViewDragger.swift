@@ -172,17 +172,17 @@ open class TableViewDragger: NSObject {
         
         if let tableView = targetTableView {
             let actualCell = tableView.cellForRow(at: dragIndexPath)
-            actualCell?.isHidden = originCellHidden
             
-            if let draggedCell = draggedCell(tableView, indexPath: dragIndexPath) {
-                let point = gesture.location(in: actualCell)
-                draggedCell.offset = point
-                draggedCell.transformToPoint(point)
-                draggedCell.location = gesture.location(in: tableView)
-                tableView.addSubview(draggedCell)
-                
-                draggingCell = draggedCell
-            }
+            guard let draggedCell = draggedCell(tableView, indexPath: dragIndexPath) else { return }
+            let point = gesture.location(in: actualCell)
+            draggedCell.offset = point
+            draggedCell.transformToPoint(point)
+            draggedCell.location = gesture.location(in: tableView)
+
+            actualCell?.isHidden = originCellHidden
+            tableView.addSubview(draggedCell)
+            
+            draggingCell = draggedCell
             
             targetClipsToBounds = tableView.clipsToBounds
             tableView.clipsToBounds = false
